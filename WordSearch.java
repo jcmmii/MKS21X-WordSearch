@@ -57,7 +57,6 @@ public class WordSearch{
        }
        int Strlen = word.length();
        if (Strlen + col > len1) return false;
-  //     if (Strlen + row > len2) return false;
        for (int x = 0; x < Strlen; x++) {
          if (data[row][col+x] != '_' && data[row][col+x] != word.charAt(x)) {
             return false;
@@ -87,7 +86,6 @@ public class WordSearch{
        return false; // out of bounds
      }
      int Strlen = word.length();
-  //   if (Strlen + col > len1) return false;
      if (Strlen + row > len2) return false;
      for (int x = 0; x < Strlen; x++) {
        if (data[row+x][col] != '_' && data[row+x][col] != word.charAt(x)) {
