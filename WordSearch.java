@@ -7,6 +7,9 @@ public class WordSearch{
      *@param col is the starting width of the WordSearch
      */
      public WordSearch (int rows, int cols) {
+       if (rows < 0 || cols < 0) {
+         throw new IllegalArgumentException();
+       }
        data = new char[rows][cols];
        clear();
      }
@@ -40,11 +43,60 @@ public class WordSearch{
      *have a corresponding letter to match any letters that it overlaps.
      *
      *@param word is any text to be added to the word grid.
-     *@param row is the vertical locaiton of where you want the word to start.
+     *@param row is the vertical location of where you want the word to start.
      *@param col is the horizontal location of where you want the word to start.
      *@return true when the word is added successfully. When the word doesn't fit,
      * or there are overlapping letters that do not match, then false is returned
      * and the board is NOT modified.
      */
+     public boolean addWordHorizontal(String word, int row, int col) {
+       int len1 = data[0].length;
+       int len2 = data.length;
+       if (row >= len2 || col >= len1 || row < 0 || col < 0) {
+        return false; // out of bounds
+       }
+       int Strlen = word.length();
+       if (Strlen + col > len1) return false;
+  //     if (Strlen + row > len2) return false;
+       for (int x = 0; x < Strlen; x++) {
+         if (data[row][col+x] != '_' && data[row][col+x] != word.charAt(x)) {
+            return false;
+          }
+        }
+       for (int y = 0; y < Strlen; y++) {
+          data[row][col+y] = word.charAt(y);
+        }
+      return true;
+      }
 
+     /**Attempts to add a given word to the specified position of the WordGrid.
+    *The word is added from top to bottom, must fit on the WordGrid, and must
+    *have a corresponding letter to match any letters that it overlaps.
+    *
+    *@param word is any text to be added to the word grid.
+    *@param row is the vertical locaiton of where you want the word to start.
+    *@param col is the horizontal location of where you want the word to start.
+    *@return true when the word is added successfully. When the word doesn't fit,
+    *or there are overlapping letters that do not match, then false is returned.
+    *and the board is NOT modified.
+    */
+   public boolean addWordVertical(String word,int row, int col){
+     int len1 = data[0].length;
+     int len2 = data.length;
+     if (row >= len2 || col >= len1 || row < 0 || col < 0) {
+       return false; // out of bounds
+     }
+     int Strlen = word.length();
+  //   if (Strlen + col > len1) return false;
+     if (Strlen + row > len2) return false;
+     for (int x = 0; x < Strlen; x++) {
+       if (data[row+x][col] != '_' && data[row+x][col] != word.charAt(x)) {
+          return false;
+        }
+     }
+     for (int y = 0; y < Strlen; y++) {
+        data[row+y][col] = word.charAt(y);
+      }
+      return true;
    }
+}
