@@ -25,5 +25,18 @@ public class JDriver {
 
     System.out.println("Adding \"test\" @ 5,0 horizontally(F): " + A.addWordHorizontal("test",5,0));
     System.out.println(A);
+
+
+    System.out.println("Adding \"eeHH\" @ 0,1 diagonally(T): " + A.addWordDiagonal("eeHH",0,1));
+    System.out.println(A);
+
+    System.out.println("Adding \"yolo\" @ 0,2 diagonally(F): " + A.addWordDiagonal("yolo",0,2));
+    System.out.println(A);
+
+    System.out.println("Adding \"octopus\" @ 4,0 diagonally(F): " + A.addWordDiagonal("ocotopus",4,0));
+    System.out.println(A);
+
+    System.out.println("Adding \"yes\" @ 0,2 diagonally(F): " + A.addWordDiagonal("yes",0,2));
+    System.out.println(A);
   }
 }
