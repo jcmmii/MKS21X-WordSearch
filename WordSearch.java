@@ -1,3 +1,9 @@
+import java.util.random;
+import java.util.scanner;
+import java.util.ArrayList;
+import java.util.file;
+import java.util.filenotfoundexception;
+
 public class WordSearch{
     private char[][]data;
 
@@ -125,3 +131,5 @@ public class WordSearch{
      return true;
      }
  }
+
+//debugs: if word.length() is <= 0
