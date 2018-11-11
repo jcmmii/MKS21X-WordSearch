@@ -1,11 +1,12 @@
-import java.util.random;
-import java.util.scanner;
-import java.util.ArrayList;
-import java.util.file;
-import java.util.filenotfoundexception;
+import java.util.*; //Random, Scanner, ArrayList
+import java.io.*; //File, FileNotFoundException
 
 public class WordSearch{
     private char[][]data;
+    private int seed;
+    private Random randgen;
+    private ArrayList<String> wordsToAdd;
+    private ArrayList<String> wordsAdded;
 
     /**Initialize the grid to the size specified
      *and fill all of the positions with '_'
@@ -13,6 +14,14 @@ public class WordSearch{
      *@param col is the starting width of the WordSearch
      */
      public WordSearch (int rows, int cols) {
+       if (rows < 0 || cols < 0) {
+         throw new IllegalArgumentException();
+       }
+       data = new char[rows][cols];
+       clear();
+       Random randSeed = new Random();
+     }
+     public WordSearch (int rows, int cols, String filename, int randSeed) {
        if (rows < 0 || cols < 0) {
          throw new IllegalArgumentException();
        }
@@ -33,14 +42,18 @@ public class WordSearch{
     *@return a String with each character separated by spaces, and rows
     *separated by newlines.
     */
+//add list of words after words AND THE SEED
     public String toString(){
       String ret = "";
        for (int x = 0; x < data.length; x++) {
          for (int y = 0; y < data[x].length; y++) {
+           if (y == 0) ret = ret + "|";
            ret = ret + data[x][y] + " ";
+           if (y == data[x].length-1) ret = ret + "|";
          }
          ret = ret + "\n";
        }
+       ret = ret + "Words: ";
        return ret;
     }
 
