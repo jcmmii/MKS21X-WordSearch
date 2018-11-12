@@ -14,20 +14,25 @@ public class WordSearch{
      *@param col is the starting width of the WordSearch
      */
      public WordSearch (int rows, int cols, String filename) {
-       if (rows < 0 || cols < 0) {
-         throw new IllegalArgumentException();
-       }
+       if (rows < 0 || cols < 0) throw new IllegalArgumentException();
        data = new char[rows][cols];
+       wordsToAdd = new ArrayList<String>();
+       File f = new File(filename);
+       Scanner in = new Scanner(f);
+       while(in.hasNext()) {
+         wordsToAdd.add(in.next());
+       }
+       int clock = System.currentTimeMillis();
+       seed = clock;
+       randgen = new Random(clock);
        clear();
-       Random randSeed = new Random();
+       addAllWords();
      }
 
      public WordSearch (int rows, int cols, String filename, int randSeed) {
-       if (rows < 0 || cols < 0) {
-         throw new IllegalArgumentException();
-       }
-       data = new char[rows][cols];
-       clear();
+       Wordsearch(rows,cols,filename);
+       seed = randSeed;
+       randgen = new Random(randSeed);
      }
 
    /**Set all values in the WordSearch to underscores'_'*/
@@ -99,6 +104,10 @@ public class WordSearch{
         data[row+(y*rowIncrement)][col+(y*colIncrement)] = word.charAt(y);
       }
       return true;
+    }
+
+    public void addAllWords() {
+
     }
 
 
