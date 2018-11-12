@@ -42,6 +42,8 @@ public class WordSearch{
     /**Each row is a new line, there is a space between each letter
     *@return a String with each character separated by spaces, and rows
     *separated by newlines.
+    *'|' are used as boundaries of the grid
+    *The words in the puzzle and the seed are listed at the botom
     */
 
 //
@@ -79,9 +81,6 @@ public class WordSearch{
          *[ 1,0] would add downwards because (row+1), with no col change
          *[ 0,-1] would add towards the left because (col - 1), with no row change
          */
-      //-1,-1 -1,0  -1,1  0,-1  0,0  0,1  1,-1  1,0 1,1
-      //-1,-1 -1,0  -1,1  0,-1            1,-1
-
 
     private boolean addWord(String word, int row, int col, int rowIncrement, int colIncrement) {
       int length = data[0].length;
@@ -96,88 +95,11 @@ public class WordSearch{
       for (int x = 0; x < Strlen; x++) {
         if (data[row+(x*rowIncrement)][col+(x*colIncrement)] != '_' && data[row+(x*rowIncrement)][col+(x*colIncrement)] != word.charAt(x)) return false;
       }
-
-
-
-
-
-      if (rowIncrement == 0 && colIncrement == 1) addWordHorizontal(word,row,col); //  right
-      if (rowIncrement == 1 && colIncrement == 0) addWordVertical(word,row,col);  // down
-      if (rowIncrement == 1 && colIncrement == 1) addWordDiagonal(word,row,col);  //right + down
-
-      if (rowIncrement == -1 && colIncrement == -1) { // up + left
-
-
-        if (row - Strlen < -1 || col - Strlen < -1) return false;
-
-
-        for (int x = 0; x < Strlen; x++) {
-          if(data[row-x][col-x] != '_' && data[row-x][col-x] != word.charAt(x)) return false;
-        }
-        for (int y = 0; y < Strlen; y++) {
-          data[row-y][col-y] = word.charAt(y);
-        }
-        return true;
+      for (int y = 0; y < Strlen; y++) {
+        data[row+(y*rowIncrement)][col+(y*colIncrement)] = word.charAt(y);
       }
-
-      if (rowIncrement == -1 && colIncrement == 0) { //up
-        if (row - Strlen < -1) return false;
-        for (int x = 0; x < Strlen; x++) {
-          if (data[row-x][col] != '_' && data[row-x][col] != word.charAt(x)) {
-             return false;
-           }
-        }
-        for (int y = 0; y < Strlen; y++) {
-           data[row-y][col] = word.charAt(y);
-         }
-         return true;
-      }
-
-      if (rowIncrement == -1 && colIncrement == 1) { //up + right
-        if (row - Strlen < -1 || col + Strlen > len1) return false;
-        for (int x = 0; x < Strlen; x++) {
-          if(data[row-x][col+x] != '_' && data[row-x][col+x] != word.charAt(x)) return false;
-        }
-        for (int y = 0; y < Strlen; y++) {
-          data[row-y][col+y] = word.charAt(y);
-        }
-        return true;
-      }
-
-      if (rowIncrement == 0 && colIncrement == -1) { // left
-        if (col - Strlen < -1) return false;
-        for (int x = 0; x < Strlen; x++) {
-          if (data[row][col-x] != '_' && data[row][col-x] != word.charAt(x)) {
-             return false;
-           }
-         }
-        for (int y = 0; y < Strlen; y++) {
-           data[row][col-y] = word.charAt(y);
-         }
-       return true;
-      }
-
-      if (rowIncrement == 1 && colIncrement == -1) { // left + down
-        if (Strlen + row > len2 || col - Strlen < -1) return false;
-        for (int x = 0; x < Strlen; x++) {
-          if(data[row+x][col-x] != '_' && data[row+x][col-x] != word.charAt(x)) return false;
-        }
-        for (int y = 0; y < Strlen; y++) {
-          data[row+y][col-y] = word.charAt(y);
-        }
-        return true;
-      }
-
       return true;
     }
-
-
-
-
-
-
-
-
 
 
     /**Attempts to add a given word to the specified position of the WordGrid.
@@ -249,6 +171,7 @@ public class WordSearch{
     *@param col is the horizontal location of where you want the word to start.
     *@return true when the word is added successfully. When the word doesn't fit,
     *or there are overlapping letters that do not match, then false is returned.
+    *and the board is NOT modified.
     */
    private boolean addWordDiagonal(String word,int row, int col){
      int len1 = data[0].length;
@@ -267,5 +190,3 @@ public class WordSearch{
      return true;
      }
  }
-
-//debugs: if word.length() is <= 0
