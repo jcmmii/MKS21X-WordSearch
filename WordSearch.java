@@ -14,26 +14,24 @@ public class WordSearch{
      *@param col is the starting width of the WordSearch
      */
      public WordSearch (int rows, int cols, String filename) throws FileNotFoundException {
-       if (rows < 0 || cols < 0) throw new IllegalArgumentException();
-       data = new char[rows][cols];
-       this.wordsToAdd = new ArrayList<String>();
-       File f = new File(filename);
-       Scanner in = new Scanner(f);
-       while(in.hasNext()) {
-         this.wordsToAdd.add(in.next());
-       }
-       wordsAdded = new ArrayList<String>();
        long clock = System.currentTimeMillis();
-       seed = (int)clock;
-       randgen = new Random(clock);
-       clear();
-       addAllWords();
+       time = (int)clock;
+       WordSearch(rows,cols,filename,time);
      }
 
      public WordSearch (int rows, int cols, String filename, int randSeed) throws FileNotFoundException {
-       this(rows,cols,filename);
+       if (rows < 0 || cols < 0) throw new IllegalArgumentException();
+       data = new char[rows][cols];
+       this.wordsToAdd = new ArrayList<String>();
+       File z = new File(filename);
+       Scanner in = new Scanner(z);
+       while(in.hasNext()) {
+         this.wordsToAdd.add(in.next());
+       }
        seed = randSeed;
        randgen = new Random(randSeed);
+       clear();
+       addAllWords();
      }
 
    /**Set all values in the WordSearch to underscores'_'*/
@@ -84,8 +82,8 @@ public class WordSearch{
          *[ 1,0] would add downwards because (row+1), with no col change
          *[ 0,-1] would add towards the left because (col - 1), with no row change
          */
-//private
-    public boolean addWord(String word, int row, int col, int rowIncrement, int colIncrement) {
+
+    private boolean addWord(String word, int row, int col, int rowIncrement, int colIncrement) {
       int length = data[0].length;
       int height = data.length;
       int Strlen = word.length();
@@ -104,30 +102,37 @@ public class WordSearch{
       return true;
     }
 
-    public void addAllWords() {
+    private void addAllWords() {
       int[] dir = new int[3];
       dir[0] = -1;
       dir[1] = 0;
       dir[2] = 1;
       int Attempts = 200;
       int Tries = 0;
+      int worked = 0;
       while (Tries < Attempts && wordsToAdd.size() > 0) {
-        int a = new Random().nextInt(3);
-        int b = new Random().nextInt(3);
-        int RDir = dir[a]; // gets random dir
-        int CDir = dir[b];
-        int x = new Random().nextInt(wordsToAdd.size());
-        String RWord = wordsToAdd.get(x); // gets random word
-
-        int o = new Random().nextInt(data.length - 1); // gets random start position
-        int p = new Random().nextInt(data[0].length - 1);
+        if (worked == 0){
+          int a = randgen.nextInt(3);
+          int b = randgen.nextInt(3);
+          int RDir = dir[a]; // gets random dir
+          int CDir = dir[b];
+          int x = randgen.nextInt(wordsToAdd.size());
+          String RWord = wordsToAdd.get(x); // gets random word
+        }
+        
+        if (worked == 0 || worked == 1) {
+          int o = randgen.nextInt(data.length); // gets random start position
+          int p = randgen.nextInt(data[0].length);
+        }
 
         if (addWord(RWord,o,p,RDir,CDir)) {
           this.wordsToAdd.remove(RWord);
           this.wordsAdded.add(RWord);
+          worked = 0;
           ++Tries;
         } else {
           ++Tries;
+          worked = 1;
         }
       }
     }
