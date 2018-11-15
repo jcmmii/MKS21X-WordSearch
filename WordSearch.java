@@ -1,6 +1,9 @@
 import java.util.*; //Random, Scanner, ArrayList
 import java.io.*; //File, FileNotFoundException
 
+
+//include main in Wordsearch
+
 public class WordSearch{
     private char[][]data;
     private int seed;
@@ -13,27 +16,58 @@ public class WordSearch{
      *@param row is the starting height of the WordSearch
      *@param col is the starting width of the WordSearch
      */
-     public WordSearch (int rows, int cols, String filename) throws FileNotFoundException {
-       long clock = System.currentTimeMillis();
-       time = (int)clock;
-       WordSearch(rows,cols,filename,time);
-     }
-
-     public WordSearch (int rows, int cols, String filename, int randSeed) throws FileNotFoundException {
+     public WordSearch (int rows, int cols, String filename, int randSeed, String answers) throws FileNotFoundException {
        if (rows < 0 || cols < 0) throw new IllegalArgumentException();
        data = new char[rows][cols];
-       this.wordsToAdd = new ArrayList<String>();
-       File z = new File(filename);
-       Scanner in = new Scanner(z);
-       while(in.hasNext()) {
-         this.wordsToAdd.add(in.next());
-       }
+       wordsToAdd = new ArrayList<String>();
+       wordsAdded = new ArrayList<String>();
+       ListWordsToAdd(filename);
        seed = randSeed;
        randgen = new Random(randSeed);
        clear();
        addAllWords();
-     }
+       if (answers.equals("key")) {
+         replaceUnderscores();
+       } else {
+         fillRandomLetters();
+       }
+      }
 
+      // account for if randSeed arg is there
+
+    private void ListWordsToAdd(String filename) {
+      try {
+        File z = new File(filename);
+        Scanner in = new Scanner(z);
+        while(in.hasNext()) {
+          this.wordsToAdd.add(in.next());
+        }
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+
+//this needs fixing
+    private void fillRandomLetters() {
+      String CharList = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      for (int x = 0; x < data.length; x++) {
+        for (int y = 0; y < data[x].length; y++) {
+          int z = randgen.nextInt(26);
+          if (data[x][y] == '_') data[x][y] = CharList.charAt(z);
+        }
+      }
+    }
+
+
+    private void replaceUnderscores() {
+      for (int x = 0; x < data.length; x++) {
+        for (int y = 0; y < data[x].length; y++) {
+          if (data[x][y] == '_')  data[x][y] = ' ';
+        }
+      }
+    }
+
+//this is good
    /**Set all values in the WordSearch to underscores'_'*/
     private void clear() {
       for (int x = 0; x < data.length; x++) {
@@ -50,6 +84,7 @@ public class WordSearch{
     *The words in the puzzle and the seed are listed at the botom
     */
 
+//this is good
     public String toString(){
       String ret = "";
        for (int x = 0; x < data.length; x++) {
@@ -83,6 +118,7 @@ public class WordSearch{
          *[ 0,-1] would add towards the left because (col - 1), with no row change
          */
 
+//this should be good
     private boolean addWord(String word, int row, int col, int rowIncrement, int colIncrement) {
       int length = data[0].length;
       int height = data.length;
@@ -102,6 +138,7 @@ public class WordSearch{
       return true;
     }
 
+//this might need fixing
     private void addAllWords() {
       int[] dir = new int[3];
       dir[0] = -1;
@@ -110,24 +147,25 @@ public class WordSearch{
       int Attempts = 200;
       int Tries = 0;
       int worked = 0;
+      String RWord;
+      int a, b, x, RDir, CDir, o, p;
       while (Tries < Attempts && wordsToAdd.size() > 0) {
-        if (worked == 0){
-          int a = randgen.nextInt(3);
-          int b = randgen.nextInt(3);
-          int RDir = dir[a]; // gets random dir
-          int CDir = dir[b];
-          int x = randgen.nextInt(wordsToAdd.size());
-          String RWord = wordsToAdd.get(x); // gets random word
-        }
-        
-        if (worked == 0 || worked == 1) {
-          int o = randgen.nextInt(data.length); // gets random start position
-          int p = randgen.nextInt(data[0].length);
-        }
+
+           a = randgen.nextInt(3);
+           b = randgen.nextInt(3);
+           RDir = dir[a]; // gets random dir
+           CDir = dir[b];
+           x = randgen.nextInt(wordsToAdd.size());
+           RWord = wordsToAdd.get(x); // gets random word
+
+
+           o = randgen.nextInt(data.length); // gets random start position
+           p = randgen.nextInt(data[0].length);
+
 
         if (addWord(RWord,o,p,RDir,CDir)) {
-          this.wordsToAdd.remove(RWord);
-          this.wordsAdded.add(RWord);
+          wordsToAdd.remove(RWord);
+          wordsAdded.add(RWord);
           worked = 0;
           ++Tries;
         } else {
@@ -136,6 +174,12 @@ public class WordSearch{
         }
       }
     }
+
+
+
+
+
+//old unused methods
 
     /**Attempts to add a given word to the specified position of the WordGrid.
      *The word is added from left to right, must fit on the WordGrid, and must
@@ -224,4 +268,33 @@ public class WordSearch{
      }
      return true;
      }
- }
+   }
+
+
+//fillRandomLetters, replaceUnderscores()
+
+//get rid of this
+  /*   public WordSearch (int rows, int cols, String filename) throws FileNotFoundException {
+       long clock = System.currentTimeMillis();
+       int time = (int)clock;
+       this(rows,cols,filename,time);
+     }
+ // K is testing 0 constructors, methods
+ // helper methods ok
+ // One constructor okay -> can test if seed, boolean is there
+
+ // Wordsearch(filename, rows,cols, seeds,  boolean key
+ // main can call in constructor to fill in approriate values
+ // constructor:
+//  wordsToAdd = getWords(filename);
+// if (!key) {
+    //fillRandomLetters();
+}
+
+// make everything caps
+// main method calls constructors and bases calls off args length
+
+// no exceptions in shell
+// all errors should be caught and handled
+// if things don't parse, args length not right, print errors
+*/
