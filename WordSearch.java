@@ -1,7 +1,6 @@
 import java.util.*; //Random, Scanner, ArrayList
 import java.io.*; //File, FileNotFoundException
 
-
 //include main in Wordsearch
 
 public class WordSearch{
@@ -16,7 +15,7 @@ public class WordSearch{
      *@param row is the starting height of the WordSearch
      *@param col is the starting width of the WordSearch
      */
-     public WordSearch (int rows, int cols, String filename, int randSeed, String answers) throws FileNotFoundException {
+     public WordSearch (int rows, int cols, String filename, int randSeed, boolean answers) throws FileNotFoundException {
        if (rows < 0 || cols < 0) throw new IllegalArgumentException();
        data = new char[rows][cols];
        wordsToAdd = new ArrayList<String>();
@@ -26,7 +25,7 @@ public class WordSearch{
        randgen = new Random(randSeed);
        clear();
        addAllWords();
-       if (answers.equals("key")) {
+       if (answers) {
          replaceUnderscores();
        } else {
          fillRandomLetters();
@@ -85,6 +84,7 @@ public class WordSearch{
     */
 
 //this is good
+//get rid of brackets
     public String toString(){
       String ret = "";
        for (int x = 0; x < data.length; x++) {
@@ -175,8 +175,40 @@ public class WordSearch{
       }
     }
 
-   }
+    public static void main(String[] args) {
+      try {
+        if (args.length == 5) {
+          WordSearch WSAnswers = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), true);
+          System.out.println(WSAnswers);
+        }
+        else if (args.length == 4) {
+          WordSearch WSRaw = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), false);
+          System.out.println(WSRaw);
+        }
+        else if (args.length == 3) {
+          long time = System.currentTimeMillis();
+          int rando = (int) time;
+          WordSearch WSRandom = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], rando, false);
+          System.out.println(WSRandom);
+        }
+        else {
+          if (args.length > 5) System.out.println("Error: You have too many arguments!");
+          if (args.length < 3) System.out.println("Error: You are missing some arguments!");
+          System.out.println("This is the correct format for creating the WordSearch:");
+          System.out.println("java WordSearch (Int # of rows) (Int # of cols) (String filename) (Int seed) (key)");
+          System.out.println("# of rows, # of cols, and filename are REQUIRED parameters. Seed and key are optional");
+          System.out.println("Print the answer key (without random letters) by typing in the word key as the fifth parameter");
+        }
+      }
+        catch(Exception E) {
+          E.printStackTrace();
+        }
+      }
+    }
 
+
+
+//ILLEGAL FORMAT
 
 //fillRandomLetters, replaceUnderscores()
 
