@@ -1,7 +1,9 @@
 import java.util.*; //Random, Scanner, ArrayList
 import java.io.*; //File, FileNotFoundException
 
-//include main in Wordsearch
+//handle exceptions!
+  //ArrayIndexOutOfBounds
+  //IllegalArgumentException
 
 public class WordSearch{
     private char[][]data;
@@ -39,7 +41,7 @@ public class WordSearch{
         File z = new File(filename);
         Scanner in = new Scanner(z);
         while(in.hasNext()) {
-          this.wordsToAdd.add(in.next());
+          this.wordsToAdd.add(in.next().toUpperCase());
         }
       } catch (FileNotFoundException e) {
         e.printStackTrace();
@@ -119,6 +121,7 @@ public class WordSearch{
          */
 
 //this should be good
+//this is wack
     private boolean addWord(String word, int row, int col, int rowIncrement, int colIncrement) {
       int length = data[0].length;
       int height = data.length;
@@ -175,40 +178,59 @@ public class WordSearch{
       }
     }
 
+    public static void Instructions() {
+      System.out.println("This is the correct format for creating the WordSearch:");
+      System.out.println("\tjava WordSearch (Int # of rows) (Int # of cols) (String filename) (Int seed) (key)");
+      System.out.println("\t# of rows, # of cols, and filename are REQUIRED parameters. Seed and key are optional");
+      System.out.println("\tThe seed must be from 0 to 10000 inclusive, rows and columns must be greater than 0");
+      System.out.println("\tPrint the answer key (without random letters) by typing in the word \"key\" as the fifth parameter");
+    }
+
     public static void main(String[] args) {
       try {
+        WordSearch WSAnswers = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), true);
+        WordSearch WSNoAnswers = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), false);
         if (args.length == 5) {
-          WordSearch WSAnswers = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), true);
-          System.out.println(WSAnswers);
+          if (args[4].equals("key") && (Integer.parseInt(args[3]) >= 0 && Integer.parseInt(args[3]) <= 10000) && Integer.parseInt(args[0]) > 0 && Integer.parseInt(args[1]) > 0) {
+            System.out.println(WSAnswers);
+            }
+          if (!args[4].equals("key") && (Integer.parseInt(args[3]) >= 0 && Integer.parseInt(args[3]) <= 10000) && Integer.parseInt(args[0]) > 0 && Integer.parseInt(args[1]) > 0) {
+            System.out.println(WSNoAnswers);
+          }
         }
         else if (args.length == 4) {
-          WordSearch WSRaw = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), false);
-          System.out.println(WSRaw);
+          if (Integer.parseInt(args[3]) >= 0 && Integer.parseInt(args[3]) <= 10000 && Integer.parseInt(args[0]) > 0 && Integer.parseInt(args[1]) > 0) {
+            System.out.println(WSNoAnswers);
+            }
         }
         else if (args.length == 3) {
-          long time = System.currentTimeMillis();
-          int rando = (int) time;
-          WordSearch WSRandom = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], rando, false);
-          System.out.println(WSRandom);
+          if (Integer.parseInt(args[0]) > 0 && Integer.parseInt(args[1]) > 0) {
+            Random rng = new Random();
+            int ZeroTo10K = rng.nextInt(10000);
+            WordSearch WSRandom = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], ZeroTo10K, false);
+            System.out.println(WSRandom);
+          }
         }
         else {
           if (args.length > 5) System.out.println("Error: You have too many arguments!");
           if (args.length < 3) System.out.println("Error: You are missing some arguments!");
-          System.out.println("This is the correct format for creating the WordSearch:");
-          System.out.println("java WordSearch (Int # of rows) (Int # of cols) (String filename) (Int seed) (key)");
-          System.out.println("# of rows, # of cols, and filename are REQUIRED parameters. Seed and key are optional");
-          System.out.println("Print the answer key (without random letters) by typing in the word key as the fifth parameter");
+          Instructions();
         }
       }
         catch(Exception E) {
           E.printStackTrace();
+          if (Integer.parseInt(args[3]) < 0 || Integer.parseInt(args[3]) > 10000) System.out.println("Error: Seed must be between 0 and 10000 inclusive!");
+          if (Integer.parseInt(args[0]) <= 0) System.out.println("Error: rows must be greater than 0");
+          if (Integer.parseInt(args[1]) <= 0) System.out.println("Error: columns must be greater than 0");
+          Instructions();
         }
       }
     }
 
 
 
-//ILLEGAL FORMAT
+//ILLEGAL ARGUMENT FORMAT?
+//pos rows
 
 //fillRandomLetters, replaceUnderscores()
 
