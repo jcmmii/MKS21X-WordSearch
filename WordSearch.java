@@ -1,10 +1,6 @@
 import java.util.*; //Random, Scanner, ArrayList
 import java.io.*; //File, FileNotFoundException
 
-//handle exceptions!
-  //ArrayIndexOutOfBounds
-  //IllegalArgumentException
-
 public class WordSearch{
     private char[][]data;
     private int seed;
@@ -34,8 +30,6 @@ public class WordSearch{
        }
       }
 
-      // account for if randSeed arg is there
-
     private void ListWordsToAdd(String filename) {
       try {
         File z = new File(filename);
@@ -45,10 +39,10 @@ public class WordSearch{
         }
       } catch (FileNotFoundException e) {
         e.printStackTrace();
+        Instructions();
       }
     }
 
-//this needs fixing
     private void fillRandomLetters() {
       String CharList = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       for (int x = 0; x < data.length; x++) {
@@ -59,7 +53,6 @@ public class WordSearch{
       }
     }
 
-
     private void replaceUnderscores() {
       for (int x = 0; x < data.length; x++) {
         for (int y = 0; y < data[x].length; y++) {
@@ -68,7 +61,6 @@ public class WordSearch{
       }
     }
 
-//this is good
    /**Set all values in the WordSearch to underscores'_'*/
     private void clear() {
       for (int x = 0; x < data.length; x++) {
@@ -84,9 +76,6 @@ public class WordSearch{
     *'|' are used as boundaries of the grid
     *The words in the puzzle and the seed are listed at the botom
     */
-
-//this is good
-//get rid of brackets
     public String toString(){
       String ret = "";
        for (int x = 0; x < data.length; x++) {
@@ -97,7 +86,9 @@ public class WordSearch{
          }
          ret = ret + "\n";
        }
-       ret = ret + "Words: " + wordsAdded + "(Seed: " + seed + ")";
+       String list = "" + wordsAdded;
+       list = list.substring(1,list.length()-1);
+       ret = ret + "Words: " + list + " (Seed: " + seed + ")";
        return ret;
     }
 
@@ -120,8 +111,6 @@ public class WordSearch{
          *[ 0,-1] would add towards the left because (col - 1), with no row change
          */
 
-//this should be good
-//this is wack
     private boolean addWord(String word, int row, int col, int rowIncrement, int colIncrement) {
       int length = data[0].length;
       int height = data.length;
@@ -141,7 +130,6 @@ public class WordSearch{
       return true;
     }
 
-//this might need fixing
     private void addAllWords() {
       int[] dir = new int[3];
       dir[0] = -1;
@@ -153,19 +141,14 @@ public class WordSearch{
       String RWord;
       int a, b, x, RDir, CDir, o, p;
       while (Tries < Attempts && wordsToAdd.size() > 0) {
-
            a = randgen.nextInt(3);
            b = randgen.nextInt(3);
            RDir = dir[a]; // gets random dir
            CDir = dir[b];
            x = randgen.nextInt(wordsToAdd.size());
            RWord = wordsToAdd.get(x); // gets random word
-
-
            o = randgen.nextInt(data.length); // gets random start position
            p = randgen.nextInt(data[0].length);
-
-
         if (addWord(RWord,o,p,RDir,CDir)) {
           wordsToAdd.remove(RWord);
           wordsAdded.add(RWord);
@@ -184,78 +167,81 @@ public class WordSearch{
       System.out.println("\t# of rows, # of cols, and filename are REQUIRED parameters. Seed and key are optional");
       System.out.println("\tThe seed must be from 0 to 10000 inclusive, rows and columns must be greater than 0");
       System.out.println("\tPrint the answer key (without random letters) by typing in the word \"key\" as the fifth parameter");
+      System.out.println("\tMake sure the file exists and is in the same directory!");
     }
 
     public static void main(String[] args) {
       try {
-        WordSearch WSAnswers = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), true);
-        WordSearch WSNoAnswers = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), false);
         if (args.length == 5) {
+          File T = new File (args[2]);
+          if (T.exists() && !T.isDirectory()) {
           if (args[4].equals("key") && (Integer.parseInt(args[3]) >= 0 && Integer.parseInt(args[3]) <= 10000) && Integer.parseInt(args[0]) > 0 && Integer.parseInt(args[1]) > 0) {
+            WordSearch WSAnswers = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), true);
             System.out.println(WSAnswers);
             }
           if (!args[4].equals("key") && (Integer.parseInt(args[3]) >= 0 && Integer.parseInt(args[3]) <= 10000) && Integer.parseInt(args[0]) > 0 && Integer.parseInt(args[1]) > 0) {
+            WordSearch WSNoAnswers = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), false);
             System.out.println(WSNoAnswers);
           }
-        }
-        else if (args.length == 4) {
-          if (Integer.parseInt(args[3]) >= 0 && Integer.parseInt(args[3]) <= 10000 && Integer.parseInt(args[0]) > 0 && Integer.parseInt(args[1]) > 0) {
-            System.out.println(WSNoAnswers);
+          if (Integer.parseInt(args[3]) < 0 || Integer.parseInt(args[3]) > 10000) {
+                System.out.println("Error: seed is not between 0 and 10000");
+                Instructions();
+              }
+          if ((Integer.parseInt(args[0]) <= 0) || Integer.parseInt(args[1]) <= 0) {
+                System.out.println("Error: rows and columns must be greater than 0");
+                Instructions();
+              }
+          } else {
+            System.out.println("Error(s): file does not exist");
+            Instructions();
             }
         }
+        else if (args.length == 4) {
+          File T = new File (args[2]);
+          if (T.exists() && !T.isDirectory()) {
+          if (Integer.parseInt(args[3]) >= 0 && Integer.parseInt(args[3]) <= 10000 && Integer.parseInt(args[0]) > 0 && Integer.parseInt(args[1]) > 0) {
+            WordSearch WSNoAnswers = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]), false);
+            System.out.println(WSNoAnswers);
+            }
+          if (Integer.parseInt(args[3]) < 0 || Integer.parseInt(args[3]) > 10000) {
+                System.out.println("Error: seed is not between 0 and 10000");
+                Instructions();
+            }
+            if ((Integer.parseInt(args[0]) <= 0) || Integer.parseInt(args[1]) <= 0) {
+              System.out.println("Error: rows and columns must be greater than 0");
+              Instructions();
+            }
+          } else {
+            System.out.println("Error(s): file does not exist");
+            Instructions();
+          }
+        }
         else if (args.length == 3) {
+          File T = new File (args[2]);
+          if (T.exists() && !T.isDirectory()) {
           if (Integer.parseInt(args[0]) > 0 && Integer.parseInt(args[1]) > 0) {
             Random rng = new Random();
             int ZeroTo10K = rng.nextInt(10000);
             WordSearch WSRandom = new WordSearch(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], ZeroTo10K, false);
             System.out.println(WSRandom);
           }
+          if ((Integer.parseInt(args[0]) <= 0) || Integer.parseInt(args[1]) <= 0) {
+            System.out.println("Error: rows and columns must be greater than 0");
+            Instructions();
+          }
+        } else {
+          System.out.println("Error(s): file does not exist");
+          Instructions();
         }
+      }
         else {
           if (args.length > 5) System.out.println("Error: You have too many arguments!");
           if (args.length < 3) System.out.println("Error: You are missing some arguments!");
           Instructions();
         }
       }
-        catch(Exception E) {
-          E.printStackTrace();
-          if (Integer.parseInt(args[3]) < 0 || Integer.parseInt(args[3]) > 10000) System.out.println("Error: Seed must be between 0 and 10000 inclusive!");
-          if (Integer.parseInt(args[0]) <= 0) System.out.println("Error: rows must be greater than 0");
-          if (Integer.parseInt(args[1]) <= 0) System.out.println("Error: columns must be greater than 0");
+       catch(Exception E) {
           Instructions();
         }
       }
     }
-
-
-
-//ILLEGAL ARGUMENT FORMAT?
-//pos rows
-
-//fillRandomLetters, replaceUnderscores()
-
-//get rid of this
-  /*   public WordSearch (int rows, int cols, String filename) throws FileNotFoundException {
-       long clock = System.currentTimeMillis();
-       int time = (int)clock;
-       this(rows,cols,filename,time);
-     }
- // K is testing 0 constructors, methods
- // helper methods ok
- // One constructor okay -> can test if seed, boolean is there
-
- // Wordsearch(filename, rows,cols, seeds,  boolean key
- // main can call in constructor to fill in approriate values
- // constructor:
-//  wordsToAdd = getWords(filename);
-// if (!key) {
-    //fillRandomLetters();
-}
-
-// make everything caps
-// main method calls constructors and bases calls off args length
-
-// no exceptions in shell
-// all errors should be caught and handled
-// if things don't parse, args length not right, print errors
-*/
